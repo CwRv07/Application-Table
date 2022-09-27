@@ -598,19 +598,13 @@
                 label="发展方向(选修)"
                 label-width="120px"
               >
-                <el-tooltip
-                  content="点击查看详情"
-                  placement="top"
-                  :hide-after="100"
-                >
-                  <el-checkbox
-                    v-model="form.modeling"
-                    true-label="是"
-                    false-label="否"
-                    label="数学建模"
-                    @change="checkAim"
-                  />
-                </el-tooltip>
+                <el-checkbox
+                  v-model="form.modeling"
+                  true-label="是"
+                  false-label="否"
+                  label="数学建模"
+                  @change="checkAim"
+                />
               </el-form-item>
             </el-col>
             <el-col :span="24">
