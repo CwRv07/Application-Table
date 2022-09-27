@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import { baseURL } from '.'
+import qs from 'qs'
 
 export interface submitFormProps {
   name: string
@@ -8,7 +9,7 @@ export interface submitFormProps {
   id: string
   province: string
   city: string
-  phoneNumber: string
+  phone_number: string
   qq: string
   email: string
   year: string
@@ -16,7 +17,7 @@ export interface submitFormProps {
   major: string
   math: string
   english: string
-  ifReferrer: string
+  if_referrer: string
   aim: string
   modeling: string
   q1: string
@@ -30,7 +31,11 @@ export interface submitFormProps {
 
 const submitForm = (props: submitFormProps) => {
   return new Promise((resolve, reject) => {
-    axios.post(baseURL + `/submit`, { ...props }).then(resolve, reject)
+    axios
+      .post(baseURL + `/submit`, qs.stringify(props), {
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      })
+      .then(resolve, reject)
   }).catch((err) => {
     ElMessage.error('服务器繁忙，请稍后再试')
   })

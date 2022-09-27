@@ -16,7 +16,7 @@
     province: '',
     city: '',
     /* 联系方式 */
-    phoneNumber: '',
+    phone_number: '',
     qq: '',
     email: '',
     year: '',
@@ -26,7 +26,7 @@
     /* 申请信息 */
     math: '',
     english: '',
-    ifReferrer: '',
+    if_referrer: '',
     aim: '',
     modeling: '否',
     /* 主观加分项 */
@@ -121,21 +121,20 @@
         message: '不可输入非法姓名哦',
       },
     ],
-    sex: [
-      {
-        required: true,
-        message: '性别里可没有人妖哦',
-      },
-    ],
     id: [
       {
         required: true,
         message: '学号可是你校园内的唯一标识',
       },
       {
-        min: 12,
-        max: 12,
+        pattern: /^\d{12}$/,
         message: '这是你校园卡上的学号哦(12长度)',
+      },
+    ],
+    sex: [
+      {
+        required: true,
+        message: '性别里可没有人妖哦',
       },
     ],
     province: [
@@ -151,14 +150,14 @@
         message: '听说你的家乡很美，告诉我呗',
       },
     ],
-    phoneNumber: [
+    phone_number: [
       {
         required: true,
         message: '有电话才能通知你来面试哦',
       },
       {
         pattern:
-          /^(13[0-9]|14[1|4|5|6|7|8|9]|15[0|1|2|3|5|6|7|8|9]|17[2|3|5|6|7|8]|18[0-9]|19[1|8|9])\d{8}$/,
+          /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/,
         message: '不要糊弄我了，这格式不对吧',
       },
     ],
@@ -286,19 +285,16 @@
 
   /* 表单提交 */
   const scrollToProp = (message = false) => {
-    for (const key in requestProps) {
-      if (form[key] == null || form[key] == '') {
-        ElMessage.error(`已帮你滚动到目标输入框(请补全信息)`)
-        formObjective.value.scrollToField(key)
-        formSubjective.value.scrollToField(key)
-        formObjective.value.validateField(key)
-        formSubjective.value.validateField(key)
-        return false
-      }
+    const list = document.querySelectorAll('.el-form-item.is-error')
+    if (list.length !== 0) {
+      list[0].scrollIntoView()
+      ElMessage.error(`已帮你滚动到目标输入框(请补全信息)`)
+      return false
     }
     message && ElMessage.success(`信息已经填完咯，快提交吧`)
     return true
   }
+
   const submit = async () => {
     /* 基础信息检测 */
     if (scrollToProp()) {
@@ -308,7 +304,7 @@
         id: form.id,
         province: form.province,
         city: form.city,
-        phoneNumber: form.phoneNumber,
+        phone_number: form['phone_number'],
         qq: form.qq,
         email: form.email,
         year: form.year,
@@ -316,7 +312,7 @@
         major: form.major,
         math: form.math,
         english: form.english,
-        ifReferrer: form.ifReferrer,
+        if_referrer: form.if_referrer,
         aim: form.aim,
         modeling: form.modeling,
         q1: form.q1,
@@ -330,8 +326,8 @@
       const res = await API.submitForm(props)
       if (res) {
         ElMessage.success(`提交成功`)
+        hasFinish.value = true
       }
-      hasFinish.value = true
     }
   }
 
@@ -342,7 +338,7 @@
     id: false,
     province: false,
     city: false,
-    phoneNumber: false,
+    phone_number: false,
     qq: false,
     email: false,
     year: false,
@@ -532,8 +528,8 @@
           <el-row :gutter="20" class="table-section">
             <p class="section-title">联系方式</p>
             <el-col :sm="12" :xs="24">
-              <el-form-item prop="phoneNumber" label="手机号" required>
-                <el-input type="tel" v-model="form.phoneNumber" />
+              <el-form-item prop="phone_number" label="手机号" required>
+                <el-input type="tel" v-model="form.phone_number" />
               </el-form-item>
             </el-col>
             <el-col :sm="12" :xs="24">
@@ -608,8 +604,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="24">
-              <el-form-item prop="ifReferrer" label="推荐人">
-                <el-input v-model="form.ifReferrer" />
+              <el-form-item prop="if_referrer" label="推荐人">
+                <el-input v-model="form.if_referrer" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -940,15 +936,18 @@
   :deep(.el-dialog__body) {
     padding: 0px 20px;
   }
+
   .dialog {
     .dialog-title {
       font-weight: bold;
       margin-bottom: 10px;
     }
+
     .dialog-item {
       margin: 5px 0;
     }
   }
+
   /* 置顶 */
   .el-backtop {
     box-shadow: var(--el-box-shadow);

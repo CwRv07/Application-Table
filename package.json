@@ -19,10 +19,12 @@
   "dependencies": {
     "axios": "^0.27.2",
     "element-plus": "^2.2.9",
+    "qs": "^6.11.0",
     "vue": "^3.2.37"
   },
   "devDependencies": {
     "@types/node": "^18.0.4",
+    "@types/qs": "^6.9.7",
     "@typescript-eslint/eslint-plugin": "^5.30.6",
     "@typescript-eslint/parser": "^5.30.6",
     "@vitejs/plugin-vue": "^3.0.0",
