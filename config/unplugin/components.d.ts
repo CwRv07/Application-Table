@@ -21,6 +21,5 @@ declare module '@vue/runtime-core' {
     ElResult: typeof import('element-plus/es')['ElResult']
     ElRow: typeof import('element-plus/es')['ElRow']
     ElSelect: typeof import('element-plus/es')['ElSelect']
-    ElTooltip: typeof import('element-plus/es')['ElTooltip']
   }
 }
