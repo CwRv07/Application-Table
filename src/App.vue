@@ -285,10 +285,16 @@
 
   /* 表单提交 */
   const scrollToProp = (message = false) => {
-    const list = document.querySelectorAll('.el-form-item.is-error')
-    if (list.length !== 0) {
-      list[0].scrollIntoView()
+    const errList = document.querySelectorAll('.el-form-item.is-error')
+    if (errList.length !== 0) {
+      errList[0].scrollIntoView()
       ElMessage.error(`已帮你滚动到目标输入框(请补全信息)`)
+      return false
+    }
+    const successList = document.querySelectorAll('.el-form-item.is-success')
+    if (successList.length !== progress.total) {
+      ElMessage.error(`已帮你滚动到目标输入框(请补全信息)`)
+      scrollToTable()
       return false
     }
     message && ElMessage.success(`信息已经填完咯，快提交吧`)
