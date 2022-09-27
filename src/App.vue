@@ -266,7 +266,6 @@
   })
   const validate = debounce(
     (props: string, isValid: boolean) => {
-      console.log(props)
       if (isValid === requestProps[props]) return
       let completeNum = 0
       requestProps[props] = isValid
@@ -326,7 +325,10 @@
         q7: form.q7,
       }
       const res = await API.submitForm(props)
-      console.log(res)
+      if (res) {
+        ElMessage.success(`提交成功`)
+      }
+      hasFinish.value = true
     }
   }
 
@@ -385,12 +387,16 @@
     })
   })
   /* 弹窗控制 发展方向介绍 */
+  type aimInfoType = {
+    title: string
+    list: string[]
+  }
   const dialog = reactive({
     isShow: false,
     title: '',
-    message: '',
+    message: { title: '', list: [] as string[] },
     cancel: () => {
-      if (dialog.title === '数字建模') {
+      if (dialog.title === '数学建模') {
         form.modeling = false
       } else {
         form.aim = ''
@@ -398,27 +404,64 @@
       dialog.isShow = false
     },
     enter: () => {
+      if (dialog.title === '数学建模') {
+        form.modeling = '是'
+      } else {
+        form.aim = dialog.title
+      }
       dialog.isShow = false
     },
   })
-  const aimInfo: Record<string, string> = {
-    前端: '1',
-    后端: '2',
-    产品: '3',
-    数字建模: '4',
+  const aimInfo: Record<string, aimInfoType> = {
+    前端: {
+      title:
+        '前端主要负责数据的展示和交互，我们使用的浏览器、小程序、app的界面都是前端制作的',
+      list: [
+        `1、熟悉前端三件套：HTML、CSS、JavaScript，轻松编写静态页面。`,
+        `2、掌握UI框架：BootStrap、ElementPlus/Ant-Design；掌握JS框架：Vue/React。`,
+        `3、熟悉AJAX/Fetch，学会前后端交互实现动态网页。`,
+        `4、掌握node.js。`,
+        `5、了解MySQL、以及一门后端编程语言，了解后端事务和流程。`,
+      ],
+    },
+    后端: {
+      title:
+        '专注Linux/Windows系统、Apache服务器、python语言、MySQL数据库的建设、数据获取分析处理',
+      list: [
+        `1.掌握一定的前端基础知识：HTML、CSS、JavaScript、Ajax等。`,
+        `2、熟悉相关网络协议：HTTP协议，TCP/IP协议。`,
+        `3、了解后端语言，例如java，python（python相对合适于数据处理的操作）`,
+        `4、熟悉关系型数据库MySQL，非关系型NoSQL，学会数据库设计思想，熟练数据库语句及数据库的优化配置。`,
+        `5、熟练服务器Apache Nginx的相关配置且应用Linux、 Windows操作系统。`,
+      ],
+    },
+    数学建模: {
+      title: '数学建模是基于现实问题构建数学模型，并且使用算法对问题进行求解',
+      list: [
+        `简单的例子：高中的线性回归方程`,
+        `1、语言方面可以学习matlab和python，R语言也可以，python相比matlab和R语言，python的适用范围广，简单来说就是python学了还能做除了数学建模以外的事，matlab和R语言就专注于数据`,
+        `2、了解一些数据分析的基本方法`,
+        `3、学习一些机器学习的相关内容（线性回归方程就是一种最基础的机器学习）`,
+      ],
+    },
   }
   const checkAim = (value: any) => {
     if (value === '是' || value === '否') {
-      value = '数字建模'
+      value = '数学建模'
+      form.modeling = '否'
+    } else {
+      form.aim = ''
     }
     dialog.title = value
     dialog.message = aimInfo[value]
     dialog.isShow = true
   }
+  /* 表单提交成功响应 */
+  const hasFinish = ref(false)
 </script>
 
 <template>
-  <div id="table">
+  <div id="table" v-if="!hasFinish">
     <header id="header">
       <section class="table-title">
         <h1>
@@ -555,13 +598,6 @@
                   >
                     <el-radio label="后端">后端</el-radio>
                   </el-tooltip>
-                  <el-tooltip
-                    content="点击查看详情"
-                    placement="top"
-                    :hide-after="100"
-                  >
-                    <el-radio label="产品">产品</el-radio>
-                  </el-tooltip>
                 </el-radio-group>
               </el-form-item>
             </el-col>
@@ -580,7 +616,7 @@
                     v-model="form.modeling"
                     true-label="是"
                     false-label="否"
-                    label="数字建模"
+                    label="数学建模"
                     @change="checkAim"
                   />
                 </el-tooltip>
@@ -674,10 +710,20 @@
       v-model="dialog.isShow"
       :title="dialog.title"
       :width="isPhone ? '80%' : '50%'"
-      @close="dialog.cancel"
     >
       <template #default>
-        <span>{{ dialog.message }}</span>
+        <section class="dialog">
+          <p class="dialog-title">{{ dialog.message.title }}</p>
+          <ul class="dialog-list">
+            <li
+              class="dialog-item"
+              v-for="item in dialog.message.list"
+              :key="item"
+            >
+              {{ item }}
+            </li>
+          </ul>
+        </section>
       </template>
       <template #footer>
         <span class="dialog-footer">
@@ -691,10 +737,14 @@
     <!-- 页置顶 -->
     <el-backtop :right="50" :bottom="70" />
   </div>
+  <div id="status" v-else>
+    <el-result icon="success" title="提交成功" sub-title="请耐心等待申请结果" />
+  </div>
 </template>
 
 <style lang="scss" scoped>
   @use 'element-plus/theme-chalk/dark/css-vars.css';
+
   #table {
     --rv-gradient-ramp-title: linear-gradient(
       to right,
@@ -729,6 +779,7 @@
         animation-iteration-count: infinite;
         animation-timing-function: linear;
       }
+
       &:before {
         bottom: 15vh;
         border-radius: 45%;
@@ -746,9 +797,11 @@
         0% {
           transform: translate(-50%, -5%) rotateZ(0deg);
         }
+
         50% {
           transform: translate(-50%, -10%) rotateZ(180deg);
         }
+
         100% {
           transform: translate(-50%, -5%) rotateZ(360deg);
         }
@@ -769,12 +822,14 @@
         -webkit-text-fill-color: transparent;
         word-spacing: -20px;
         z-index: 10;
+
         @media (min-width: 768px) {
           word-spacing: 0px;
           font-size: 70px;
         }
       }
     }
+
     .arrow {
       width: 100px;
       height: 100px;
@@ -792,15 +847,18 @@
       cursor: pointer;
       opacity: 0.8;
       z-index: 10;
+
       @media (min-width: 768px) {
         top: 70%;
       }
     }
+
     @keyframes suspend {
       0%,
       100% {
         transform: rotate(180deg) translateX(-50%) translateY(-10px);
       }
+
       50% {
         transform: rotate(180deg) translateX(-50%) translateY(10px);
       }
@@ -893,8 +951,31 @@
     }
   }
 
+  /* 弹窗 */
+  :deep(.el-dialog__body) {
+    padding: 0px 20px;
+  }
+  .dialog {
+    .dialog-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .dialog-item {
+      margin: 5px 0;
+    }
+  }
+  /* 置顶 */
   .el-backtop {
     box-shadow: var(--el-box-shadow);
+  }
+
+  /* 状态 */
+  #status {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 </style>
 
@@ -903,6 +984,7 @@
   html {
     scroll-behavior: smooth;
   }
+
   //修改滚动条样式
   ::-webkit-scrollbar {
     width: 10px;
@@ -920,6 +1002,7 @@
       background: rgb(168, 168, 168);
     }
   }
+
   ::-webkit-scrollbar-track {
     background-color: var(--el-fill-color);
   }
