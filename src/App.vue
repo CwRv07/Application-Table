@@ -68,7 +68,8 @@
   ]
   const collegeList = [
     '信息科学技术学院',
-    '东方科技学院理学院',
+    '东方科技学院',
+    '理学院',
     '工学院',
     '资源环境学院',
     '农学院',
@@ -81,10 +82,12 @@
     '商学院',
     '公共管理与法学学院',
     '马克思主义学院',
-    '外国语学院教育学院',
+    '外国语学院',
+    '教育学院',
     '生物科学技术学院',
     '体育艺术学院',
-    '国际学院继续教育学院',
+    '国际学院',
+    '继续教育学院',
     '其他',
   ]
   const problemList = reactive([
@@ -213,7 +216,7 @@
         message: '数学逻辑对编程开发很重要哦',
       },
       {
-        pattern: /^\d{3}$/,
+        pattern: /^\d{1,3}$/,
         message: '不要糊弄我了，这格式不对吧',
       },
     ],
@@ -223,7 +226,7 @@
         message: '英语可以决定你在未来的上限哦',
       },
       {
-        pattern: /^\d{3}$/,
+        pattern: /^\d{1,3}$/,
         message: '不要糊弄我了，这格式不对吧',
       },
     ],
@@ -583,21 +586,9 @@
                 required
               >
                 <el-radio-group v-model="form.aim" @change="checkAim">
-                  <el-tooltip
-                    content="点击查看详情"
-                    placement="top"
-                    :hide-after="100"
-                    :teleported="false"
-                  >
-                    <el-radio label="前端">前端</el-radio>
-                  </el-tooltip>
-                  <el-tooltip
-                    content="点击查看详情"
-                    placement="top"
-                    :hide-after="100"
-                  >
-                    <el-radio label="后端">后端</el-radio>
-                  </el-tooltip>
+                  <el-radio label="前端">前端</el-radio>
+
+                  <el-radio label="后端">后端</el-radio>
                 </el-radio-group>
               </el-form-item>
             </el-col>
@@ -642,7 +633,7 @@
             <el-col :sm="12" :xs="24">
               <el-form-item
                 prop="math"
-                label="数学成绩"
+                label="高考数学成绩"
                 label-width="80px"
                 required
               >
@@ -652,7 +643,7 @@
             <el-col :sm="12" :xs="24">
               <el-form-item
                 prop="english"
-                label="英语成绩"
+                label="高考英语成绩"
                 label-width="80px"
                 required
               >
